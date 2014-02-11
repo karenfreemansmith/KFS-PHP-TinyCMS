@@ -1,0 +1,14 @@
+/* Site Colors:
+   #000000 - black
+   $ffffff - white
+*/
+
+html {
+	height: 100%;
+	width: 100%;
+	}
+	
+body {
+	width: 80%;
+	margin: auto;
+	}
