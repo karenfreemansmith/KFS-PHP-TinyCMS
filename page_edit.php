@@ -1,36 +1,28 @@
 <?php
-	require_once("config.php");
-	$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-	if (mysqli_connect_errno()) {
-		echo "Connection failed: ". mysqli_connect_error();
-		exit();
-	}
+	require_once("session.php");
+	require_once("functions.php");
+
 	// if a form was submitted, update page
 	if (isset($_POST['title']) && isset($_POST['content'])) {
 		$title=addslashes($_POST['title']);
 		$content=addslashes($_POST['content']);
 		$id=$_POST['id'];
-		$sql = "UPDATE pages SET title='{$title}', content='{$content}' WHERE pageID={$id}";
-		if($result = $db->query($sql)) {
-			$url="page_edit.php?id={$id}";
-			header("Location: {$url}");
-		} else {
-		echo "Query: {$sql} failed";
-		}
+		updatePage($id, $title, $content);
+		header("Location: page_edit.php?id={$id}");
 	} else {
 		// display form with current page information
 		if (isset($_GET["id"])) {
 			$id = $_GET["id"];
-			$sql = "SELECT title, content, userID FROM pages WHERE pageID={$id}";
-			if($result = $db->query($sql)) {
+			$result = runSQL("SELECT title, content, userID FROM pages WHERE pageID={$id} LIMIT 1");
+			if($result) {
 				include ('header.php');			
 				while($row=$result->fetch_assoc()) {
 					$uid=$row['userID'];
 					echo "<hr /><p style='text-align:right;'>";
 					echo "<a href='page_admin.php'>view all</a> | ";
 					echo "<a href='page_add.php?pid={$id}&uid={$uid}'>add child</a> | ";
-					echo "<a href='page_delete.php?id={$id}'>delete page</a> ";
-					echo "</p><hr />";
+					echo "<a href='page_delete.php?id={$id}'>delete page</a> |";
+					echo "<a href='logout.php'>logout</a></p><hr />";
 					echo "<form method='post' action='page_edit.php'>";
 					echo "<p>Title:  <input type='text' size=55	name='title' value='";
 					echo $row['title'];
@@ -46,10 +38,9 @@
 				echo "Query: {$sql} failed";
 			}
 		}
-		
 
 	}
-	$db->close();
+
 	
 	
 ?>

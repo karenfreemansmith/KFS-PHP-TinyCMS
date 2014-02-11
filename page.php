@@ -1,14 +1,10 @@
 <?php
-	require_once("config.php");
-	$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-	if (mysqli_connect_errno()) {
-		echo "Connection failed: ". mysqli_connect_error();
-		exit();
-	}
+	require_once("functions.php");
+
 	$id = $_GET["id"];
-	$sql = "SELECT title, content, userID FROM pages WHERE pageID={$id} LIMIT 1";
+	$result=runSQL("SELECT title, content, userID FROM pages WHERE pageID={$id} LIMIT 1");
 	
-	if($result = $db->query($sql)) {
+	if($result) {
 		include('header.php');
 		while($row=$result->fetch_assoc()) {
 			$uid=$row['userID'];
@@ -20,14 +16,6 @@
 			echo "</h3>";
 			echo $row['content'];
 		}
-		
-		$result->close();
 		include ('footer.php');
-	} else {
-		echo "Query: {$sql} failed";
-	}
-	
-	$db->close();
-	
-	
+	} 
 ?>

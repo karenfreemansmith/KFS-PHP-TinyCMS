@@ -1,5 +1,5 @@
 <?php
-	require_once("config.php");
+	require_once("functions.php");
 	// if a form was submitted, update page
 	if (isset($_POST['un']) && isset($_POST['pw'])) {
 		$username=addslashes($_POST['un']);
@@ -11,9 +11,7 @@
 			echo "Connection failed: ". mysqli_connect_error();
 			exit();
 		}
-		$sql = "INSERT INTO users (username, password, sitename, description) VALUES ('{$username}', '{$password}', '{$sitename}', '{$description}')";
-		$result = $db->query($sql);		
-		$db->close();
+		addSite($sitename, $description, $username, $password);		
 		header("Location: page_admin.php");
 	} else {
 		include ('header.php');

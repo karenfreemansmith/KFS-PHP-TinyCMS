@@ -1,28 +1,23 @@
 <?php
-	require_once("config.php");
-	$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-	if (mysqli_connect_errno()) {
-		echo "Connection failed: ". mysqli_connect_error();
-		exit();
-	}
+	require_once("session.php");
+	require_once("functions.php");
+
 	// if a form was submitted, update page
 	if (isset($_POST['content'])) {
 		$sitetitle=addslashes($_POST['sitename']);
 		$content=addslashes($_POST['content']);
 		$id=$_POST['uid'];
-		$sql = "UPDATE users SET sitename='{$sitetitle}', description='{$content}' WHERE uid={$id}";
-		if($result = $db->query($sql)) {
+		
+		if(updateSite($id, $sitetitle, $content)) {
 			$page="page_admin.php?id={$id}";
 			header("Location: {$page}");
-		} else {
-		echo "Query: {$sql} failed";
-		}
+		} 
 	} else {
 		// display form with current page information
 		if (isset($_GET["id"])) {
 			$id = $_GET["id"];
-			$sql = "SELECT * FROM users WHERE uid={$id} LIMIT 1";
-			if($result = $db->query($sql)) {
+			$result = runSQL("SELECT * FROM users WHERE uid={$id} LIMIT 1");
+			if($result) {
 				include ('header.php');			
 				while($row=$result->fetch_assoc()) {
 					$title=$row['sitename'];
@@ -42,17 +37,12 @@
 					echo "<input type='hidden' name='uid' value={$uid}>";
 					echo "<p style='text-align:center;'><input type='submit' value='Update My Site'></p></form>";
 				}
-				
-				$result->close();
-				include('footer.php');
-			} else {
-				echo "Query: {$sql} failed";
-			}
-		}
-		
 
+				include('footer.php');
+			} 
+		}
 	}
-	$db->close();
+
 	
 	
 ?>

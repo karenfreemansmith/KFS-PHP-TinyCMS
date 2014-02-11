@@ -1,10 +1,7 @@
 <?php
-	require_once("config.php");
-	$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-	if (mysqli_connect_errno()) {
-		echo "Connection failed: ". mysqli_connect_error();
-		exit();
-	}
+	require_once("session.php");
+	require_once("functions.php");
+
 	if(isset($_GET['id'])) {
 		$id = $_GET["id"];
 	} else {
@@ -12,7 +9,7 @@
 	}
 	
 	$sql = "SELECT username, sitename, description FROM users WHERE uid={$id}";
-	if($result = $db->query($sql)) {
+	if($result = runSQL($sql)) {
 		$row=$result->fetch_assoc();
 		$username = $row['username'];
 		$sitename = $row['sitename'];
@@ -27,8 +24,7 @@
 	}
 	echo "</div><div class='col-sm-3'><h3>My Pages</h3>";
 
-	$sql = "SELECT pageID, title FROM pages WHERE userID={$id}";
-	if($result = $db->query($sql)) {
+	if($result = listPages($id)) {
 		while($row=$result->fetch_assoc()) {
 			echo "<strong><a href='page_edit.php?id=";
 			echo $row['pageID'];
@@ -36,11 +32,10 @@
 			echo $row['title'];
 			echo "</a></strong><br />";
 		}
-		$result->close();
 	} else {
 		echo "Query: {$sql} failed";
 	}
-	$db->close();
+
 	echo "<p style='text-align:right;'><a href='page_add.php?uid={$id}&pid=0'>add page</a></p>";
 	echo "</div>";
 	include ('footer.php');

@@ -1,6 +1,6 @@
 <?php
-	require_once("config.php");
 	require_once("session.php");
+	require_once("functions.php");
 
 	if($session->is_logged_in()) { 
 		if($_SESSION['user_id']==1) {

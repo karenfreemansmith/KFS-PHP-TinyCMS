@@ -1,5 +1,5 @@
 <?php
-	require_once("config.php");
+	require_once("functions.php");
 	require_once("session.php");
 	if(!$session->is_logged_in()) { 
 		header("Location: login.php"); }

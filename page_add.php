@@ -1,19 +1,13 @@
 <?php
-	require_once("config.php");
+	require_once("session.php");
+	require_once("functions.php");
 	// if a form was submitted, update page
 	if (isset($_POST['title']) && isset($_POST['content'])) {
 		$title=addslashes($_POST['title']);
 		$content=addslashes($_POST['content']);
 		$userID=$_POST['uid'];
 		$parentID=$_POST['pid'];
-		$db = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-		if (mysqli_connect_errno()) {
-			echo "Connection failed: ". mysqli_connect_error();
-			exit();
-		}
-		$sql = "INSERT INTO pages (title, content, userID, parentID) VALUES ('{$title}','{$content}', {$userID}, {$parentID})";
-		$result = $db->query($sql);		
-		$db->close();
+		addPage($title, $content, $userID, $parentID);		
 		header("Location: page_admin.php?id={$userID}");
 	} else {
 		if(isset($_GET['pid'])&& isset($_GET['uid'])){
